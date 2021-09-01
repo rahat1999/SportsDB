@@ -11,23 +11,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 </head>
 <body>
-        <!-- header Title -->
-    <header>
+        
+    <header class=" container">
+            <!-- header Title -->
         <h2 class="text-center text-primary p-5 fw-bolder">The Sports DB 2021</h2>
+          <!-- search button -->
+        <div class="input-group mb-3 w-50 mx-auto">
+            <input id="sports-search" type="text" class="form-control" placeholder="Search by Team Name"aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button onclick="loadSportsDb()" class="btn btn-outline-secondary "type="button"id="button-addon2">Search</button>
+
+        </div>
+         <!-- error text -->
+         <h4 id="error-msg" class="bg-danger text-white text-center fw-bolder"></h4>
     </header>
 
-    <section>
-         <!-- search button -->
-         <div class="input-group mb-3 w-50 mx-auto">
-             <input id="sports-search" type="text" class="form-control" placeholder="Search by Team Name"aria-label="Recipient's username" aria-describedby="button-addon2">
-             <button onclick="loadSportsDb()" class="btn btn-outline-secondary "type="button"id="button-addon2">Search</button>
-         </div>
-         <!-- error text -->
-         <p id="error-msg" class="text-danger text-center fw-bolder">please enter vaild teams name</p>
+    <section class="container">
          <!-- single luge deail -->
-         <div id="sports-details" class="w-50 mx-auto align-content"> </div>
-             
-         
+         <div id="team-details" class=" w-50 mx-auto bg-dark text-warning"> </div>
+       <div>
+         <!-- স্পিন্নের -->
+        <div id="spinner" class="spinner-border text-primary p-xl-4" style="margin-left: 50%;" role="status">
+            <span class="visually-hidden">Loading...</span>
+
+        </div>
+       </div>
+             <!-- team members কাজ করা হয় নাই koy ta tem member acey-->
+         <div id="team-members"></div>
          <!-- search result -->
          <div id="sports-container" class="row row-cols-1 row-cols-md-3 g-4 ">
          </div>

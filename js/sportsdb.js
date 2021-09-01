@@ -1,40 +1,51 @@
-document.getElementById('error-msg').style.display='none'
+// document.getElementById('error-msg').innerText=''
+document.getElementById('spinner').style.display='none'
 const loadSportsDb =async ()=>{
 
     const sportsSearch =document.getElementById('sports-search')
-    const searchSportsName =sportsSearch.value //.toUpperCase()
-    const url = `https://www.thesportsdb.com/api/v1/json/1/searchteams.php?t=${searchSportsName}`
-    try{
+    // clear team details/ এটা লেখা হয় নাই
+
+    const searchSportsName =sportsSearch.value ;  
+    if(searchSportsName===''){
+        document.getElementById('error-msg').innerText='Search field Empty'
+        // return
+    }
+    else{
+        document.getElementById('spinner').style.display='block';// spinner shows
+        const url = `https://www.thesportsdb.com/api/v1/json/1/searchteams.php?t=${searchSportsName}`
         const response = await fetch(url); 
         const data = await response.json(); 
         displaySportsDb(data)
+       document.getElementById('spinner').style.display='none'; // spinner stop
+        sportsSearch.value='';
+        document.getElementById('team-details').textContent=''
     }
-    catch (error){
-        console.log(error)
-    }
-    sportsSearch.value=' ';
+   
 }
 const displaySportsDb = data =>{
+   
     const info = data.teams;
-    // console.log(info)
+    //  console.log(data)
     const sportsContainer = document.getElementById('sports-container')
     sportsContainer.textContent=" "
     if(info==null){
-        document.getElementById('error-msg').style.display='block'
+        document.getElementById('error-msg').innerText='Wrong Input'
     }
     else {
         info.forEach(element => {
-            // console.log(element)
-            document.getElementById('error-msg').style.display='none'
+           
+            //  console.log(element.strTeam)
+            document.getElementById('error-msg').innerText=''
+            // document.getElementById('error-msg').style.display='none'
             const div = document.createElement('div');
             div.classList.add('col')
             div.innerHTML= `
-                <div onclick="loadSportsDetails('${element.idTeam}')" class="card h-100 text-center bg-secondary p-3">
+                <div onclick="loadSportsDetails('${element.idTeam}')" class="h-100 text-center bg-secondary p-3">
                         <img class='w-50 mx-auto' src="${element.strTeamBadge}" class="card-img-top" alt="Team Badge">
                     <div class="card-body">
                         <h5 class="card-title text-warning">${element.strTeam}</h5>
-                        <p class="card-text text-white">${element.strDescriptionEN.slice(0,150)}</p>
-                        <p class="text-danger fw-bolder ">${element.strCountry}</P>
+                        <p class="card-text text-white">${element.strLeague}</p>
+                        <p class="text-danger fw-bolder ">${element.strStadium?element.strStadium:element='N/a'}</P>
                     </div>
                 </div>
             `;
@@ -42,41 +53,33 @@ const displaySportsDb = data =>{
         });
     }
 }
-
+    /* fetch team details */
 const loadSportsDetails = async teamId =>{
     const url= `https://www.thesportsdb.com/api/v1/json/1/lookupteam.php?id=${teamId}`
     // console.log(url)
 
     const res =await fetch(url)
     const data =await res.json()
-    displaySportsData(data.teams[0])
+    displayTeamDetails(data)
     
 }
-loadSportsDetails()
-const displaySportsData = data =>{
-    // console.log(data)
-         const sportsDiv = document.getElementById('sports-details');
-         sportsDiv.textContent=' '
-         const div = document.createElement('div') ;
-         div.classList.add=('card')
-         div.style.padding='20px'
-         div.style.borderRadius='20px'
-         div.style.background='lightblue'
-         div.style.marginBottom='5px'
-         div.innerHTML=`
-            <div class='mx-auto w-25'> 
-                    <img src="${data.strTeamBadge}" class="card-img-top" alt="">
-            </div> 
+const displayTeamDetails = teamDetails =>{
+    const teams= teamDetails.teams[0]
+    const teamDiv = document.getElementById('team-details');
+    teamDiv.textContent=''
+    const div = document.createElement('div') 
+    div.classList.add=("card")
+    div.innerHTML=`
+            <img src="${teams.strStadiumThumb?teams.strStadiumThumb:teams.strTeamBadge}" class="card-img-top align-items-center" alt="...">
             <div class="card-body text-center">
-                    <h3 class="card-title">${data.strTeam}</h3>
-                    <p class="card-text">${data.strDescriptionEN.slice(0,100)}</p>
-                    <h5 class="text-danger">${data.strCountry}</h5>
-                    <h5 class="text-danger">${data.strAlternate}</h5>
-                <div>
-                    <a href="${data.strFacebook}" class="btn btn-danger"><i class="fab fa-facebook-square"></i></a>
-                    <a href="${data.strFacebook}" class="btn btn-warning"><i class="fab fa-instagram-square"></i></a>
-                    <a href="${data.strFacebook}" class="btn btn-primary"><i class="fab fa-twitter-square"></i></a>
-                </div>
-            </div>`
-     sportsDiv.appendChild(div)
+                <h5 class="card-title ">Title :${teams.strTeam}</h5>
+                <p class="card-text">${teams.strStadium?teams.strStadium:team='N/a'}</p>
+                <p class="card-text">${teams.strDescriptionEN?.slice(0,150)?teams.strDescriptionEN.slice(0,150):team='N/a'}</p>
+            </div>
+            <div class="card-footer text-center">
+                <a class="btn bg-primary" href="https://${teams.strYoutube}"  target="_blank">Watch Videos</a>
+            </div>
+    `
+    teamDiv.appendChild(div)
+
 }
